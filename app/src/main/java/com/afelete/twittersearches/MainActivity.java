@@ -1,15 +1,31 @@
 package com.afelete.twittersearches;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String SEARCHES= "searches";
+    private EditText queryEditText;
+    private EditText tagEditText;
+    private FloatingActionButton saveFloatingActionButton;
+    private SharedPreferences savedSearches;
+    private List<String> tags;
+    private SearchesAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,6 +33,29 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        queryEditText = ((TextInputLayout) findViewById(R.id.queryTextInputLayout)).getEditText();
+        tagEditText = ((TextInputLayout) findViewById(R.id.tagTextInputLayout)).getEditText();
+        tagEditText.addTextChangedListener(textWatcher);
+
+        // get the sharedPreferences that contain the user saved searches
+        savedSearches = getSharedPreferences(SEARCHES,MODE_PRIVATE);
+
+        //store the saved tag in arrayList
+        tags = new ArrayList<>(savedSearches.getAll().keySet());
+        Collections.sort(tags,String.CASE_INSENSITIVE_ORDER);
+
+        //get reference to the recyclerView and configure it
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+
+        //use the linearLayoutManager to display items in a vertical list
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        //create recyclerview.adpter to bibd tags to the recyclerview
+        adapter = new SearchesAdapter(tags, itemClickListener, itemLongClickListener);
+        recyclerView.setAdapter(adapter);
+
+        //specify a custom ItemDecorator to draw lines
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
