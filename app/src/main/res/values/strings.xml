@@ -11,6 +11,6 @@
     <string name="share_subject">Twitter search that might interest you</string>
     <string name="share_message">Check out the results of this Twitter search</string>
     <string name="share_search">Share search to:</string>
-    <string name="Confirm_message">Are you sure you want to dekete the search \"%s\"?</string>
+    <string name="confirm_message">Are you sure you want to dekete the search \"%s\"?</string>
     <string name="delete">Delete</string>
 </resources>
